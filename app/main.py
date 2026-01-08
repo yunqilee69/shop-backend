@@ -1,14 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import IntegrityError
+from fastapi.exceptions import RequestValidationError, HTTPException
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.config import get_settings
 from app.core.response import Response
 from app.core.exceptions import AppException
 from app.core.handlers import (
     app_exception_handler,
+    http_exception_handler,
+    validation_exception_handler,
     integrity_error_handler,
+    sqlalchemy_error_handler,
     general_exception_handler,
 )
 from app.api import auth, customer_levels, customers, products, prices
@@ -33,8 +37,12 @@ app.add_middleware(
 )
 
 # 注册异常处理器
+# 注意：顺序很重要，更具体的异常处理器应该放在前面
 app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(IntegrityError, integrity_error_handler)
+app.add_exception_handler(SQLAlchemyError, sqlalchemy_error_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
 # 注册路由
