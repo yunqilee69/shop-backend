@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(pip install:*)",
+      "Bash(uv pip install:*)",
+      "Bash(alembic init:*)",
+      "Bash(uv:*)",
+      "Bash(uv run python main.py:*)",
+      "Bash(curl:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

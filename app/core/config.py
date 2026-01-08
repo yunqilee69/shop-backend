@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 
@@ -19,11 +19,19 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # CORS配置
-    CORS_ORIGINS: list[str] = []
+    CORS_ORIGINS: str = ""  # 逗号分隔的字符串
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+    )
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """将 CORS_ORIGINS 字符串转换为列表"""
+        if not self.CORS_ORIGINS:
+            return []
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
 
 @lru_cache()
