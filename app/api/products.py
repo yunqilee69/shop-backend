@@ -119,7 +119,7 @@ async def get_products(
 
     page_response = PageResponse[ProductResponse](
         total=total,
-        items=items,
+        list=items
     )
 
     return success_response(data=page_response)

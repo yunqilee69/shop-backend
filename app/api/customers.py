@@ -124,7 +124,7 @@ async def get_customers(
 
     page_response = PageResponse[CustomerListResponse](
         total=total,
-        items=items,
+        list=items
     )
 
     return success_response(data=page_response)

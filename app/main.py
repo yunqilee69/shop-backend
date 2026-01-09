@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError, HTTPException
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from pydantic import BaseModel
+from typing import Any
 
 from app.core.config import get_settings
 from app.core.response import Response
@@ -17,6 +19,14 @@ from app.core.handlers import (
 )
 from app.api import auth, customer_levels, customers, products, prices
 
+
+class PydanticResponse(JSONResponse):
+    """自定义响应类，确保 Pydantic 模型序列化时使用别名"""
+    def render(self, content: Any) -> bytes:
+        if isinstance(content, BaseModel):
+            content = content.model_dump(by_alias=True, exclude_none=True)
+        return super().render(content)
+
 settings = get_settings()
 
 # 创建FastAPI应用实例
@@ -25,6 +35,7 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description="超市后端管理系统API",
     debug=settings.DEBUG,
+    default_response_class=PydanticResponse,
 )
 
 # 配置CORS

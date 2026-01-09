@@ -9,7 +9,8 @@
       "Bash(uv run python main.py:*)",
       "Bash(curl:*)",
       "Bash(python -m json.tool:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(timeout 5 bash -c \"while ! curl -s http://localhost:8000/docs > /dev/null; do sleep 1; done; echo ''Server is ready''\")"
     ],
     "deny": [],
     "ask": []

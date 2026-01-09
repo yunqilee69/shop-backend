@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.response import Response, success_response
+from app.core.response import Response, success_response, PageResponse
 from app.core.snowflake import generate_snowflake_id
 from app.core.exceptions import ConflictException, NotFoundException, BadRequestException
 from app.schemas.customer_level import (
@@ -69,7 +69,10 @@ async def get_customer_levels(
     # 转换为响应格式
     level_list = [CustomerLevelResponse.model_validate(level) for level in levels]
 
-    return success_response(data={"items": level_list})
+    page_response = PageResponse[CustomerLevelResponse](
+        list=level_list
+    )
+    return success_response(data=page_response)
 
 
 @router.post("/detail", summary="查询等级详情")

@@ -46,10 +46,10 @@ class PageResponse(BaseModel, Generic[T]):
 
     Attributes:
         total: 总记录数
-        items: 数据列表
+        list: 数据列表
     """
     total: int = Field(default=0, description="总记录数")
-    items: list[T] = Field(default_factory=list, description="数据列表")
+    items: list[T] = Field(default_factory=list, description="数据列表", validation_alias="list", serialization_alias="list")
 
 
 def success_response(data: Any = None, msg: str = "success", code: ResponseCode = ResponseCode.SUCCESS) -> Response:
