@@ -70,7 +70,7 @@ async def get_customer_levels(
     level_list = [CustomerLevelResponse.model_validate(level) for level in levels]
 
     page_response = PageResponse[CustomerLevelResponse](
-        list=level_list
+        items=level_list
     )
     return success_response(data=page_response)
 

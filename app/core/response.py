@@ -2,7 +2,7 @@
 统一响应格式
 """
 from typing import Any, Optional, Generic, TypeVar
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_serializer
 from enum import Enum
 
 
@@ -46,10 +46,10 @@ class PageResponse(BaseModel, Generic[T]):
 
     Attributes:
         total: 总记录数
-        list: 数据列表
+        items: 数据列表
     """
     total: int = Field(default=0, description="总记录数")
-    items: list[T] = Field(default_factory=list, description="数据列表", validation_alias="list", serialization_alias="list")
+    items: list[T] = Field(default_factory=list, description="数据列表")
 
 
 def success_response(data: Any = None, msg: str = "success", code: ResponseCode = ResponseCode.SUCCESS) -> Response:

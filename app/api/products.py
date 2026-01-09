@@ -74,8 +74,8 @@ async def create_product(
     return success_response(data=product_response, msg="商品创建成功")
 
 
-@router.get("/list", summary="查询商品列表")
-async def get_products(
+@router.get("/page", summary="分页查询商品列表")
+async def get_products_page(
     page_index: int = Query(1, ge=1, alias="pageIndex", description="页码"),
     page_size: int = Query(20, ge=1, le=100, alias="pageSize", description="每页数量"),
     search: Optional[str] = Query(None, description="搜索关键词（商品名称、简称或条形码）"),
@@ -84,7 +84,7 @@ async def get_products(
     db: Session = Depends(get_db),
 ) -> Response[PageResponse[ProductResponse]]:
     """
-    查询商品列表（所有用户可用）
+    分页查询商品列表（所有用户可用）
 
     支持分页、搜索和筛选
     """
@@ -119,7 +119,7 @@ async def get_products(
 
     page_response = PageResponse[ProductResponse](
         total=total,
-        list=items
+        items=items
     )
 
     return success_response(data=page_response)

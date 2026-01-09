@@ -72,8 +72,8 @@ async def create_customer(
     return success_response(data=customer_response, msg="客户创建成功")
 
 
-@router.get("/list", summary="查询客户列表")
-async def get_customers(
+@router.get("/page", summary="分页查询客户列表")
+async def get_customers_page(
     page_index: int = Query(1, ge=1, alias="pageIndex", description="页码"),
     page_size: int = Query(20, ge=1, le=100, alias="pageSize", description="每页数量"),
     search: Optional[str] = Query(None, description="搜索关键词（客户名称或手机号）"),
@@ -82,7 +82,7 @@ async def get_customers(
     db: Session = Depends(get_db),
 ) -> Response[PageResponse[CustomerListResponse]]:
     """
-    查询客户列表（所有用户可用）
+    分页查询客户列表（所有用户可用）
 
     支持分页、搜索和筛选
     """
@@ -124,7 +124,7 @@ async def get_customers(
 
     page_response = PageResponse[CustomerListResponse](
         total=total,
-        list=items
+        items=items
     )
 
     return success_response(data=page_response)
