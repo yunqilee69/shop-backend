@@ -1,7 +1,7 @@
 """
 会员等级相关的 Pydantic Schema
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from typing import Optional
 from datetime import datetime
 
@@ -41,9 +41,14 @@ class CustomerLevelById(BaseModel):
 
 class CustomerLevelResponse(BaseModel):
     """会员等级响应 Schema"""
-    id: int = Field(..., alias="id", description="等级ID")
-    level_name: str = Field(..., alias="levelName", description="等级名称")
-    created_at: datetime = Field(..., alias="createdAt", description="创建时间")
+    id: int = Field(..., serialization_alias="id", description="等级ID")
+    level_name: str = Field(..., serialization_alias="levelName", description="等级名称")
+    created_at: datetime = Field(..., serialization_alias="createdAt", description="创建时间")
+
+    @field_serializer('id')
+    def serialize_id(self, value: int) -> str:
+        """将ID序列化为字符串"""
+        return str(value)
 
     class Config:
         from_attributes = True

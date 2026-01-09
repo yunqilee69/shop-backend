@@ -1,7 +1,7 @@
 """
 价格相关的 Pydantic Schema
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from typing import List, Optional
 from datetime import datetime
 from decimal import Decimal
@@ -53,11 +53,16 @@ class PriceByProduct(BaseModel):
 
 class PriceResponse(BaseModel):
     """价格响应 Schema"""
-    id: int = Field(..., alias="id", description="价格ID")
-    product_id: int = Field(..., alias="productId", description="商品ID")
-    level_id: int = Field(..., alias="levelId", description="会员等级ID")
-    sale_price: Decimal = Field(..., alias="salePrice", description="销售价格")
-    created_at: datetime = Field(..., alias="createdAt", description="创建时间")
+    id: int = Field(..., serialization_alias="id", description="价格ID")
+    product_id: int = Field(..., serialization_alias="productId", description="商品ID")
+    level_id: int = Field(..., serialization_alias="levelId", description="会员等级ID")
+    sale_price: Decimal = Field(..., serialization_alias="salePrice", description="销售价格")
+    created_at: datetime = Field(..., serialization_alias="createdAt", description="创建时间")
+
+    @field_serializer('id', 'product_id', 'level_id')
+    def serialize_ids(self, value: int) -> str:
+        """将ID序列化为字符串"""
+        return str(value)
 
     class Config:
         from_attributes = True
@@ -66,18 +71,28 @@ class PriceResponse(BaseModel):
 
 class ProductPriceListResponse(BaseModel):
     """商品价格列表响应 Schema"""
-    product_id: int = Field(..., alias="productId", description="商品ID")
-    product_name: str = Field(..., alias="productName", description="商品名称")
-    prices: List["PriceItemResponse"] = Field(default_factory=list, alias="prices", description="价格列表")
+    product_id: int = Field(..., serialization_alias="productId", description="商品ID")
+    product_name: str = Field(..., serialization_alias="productName", description="商品名称")
+    prices: List["PriceItemResponse"] = Field(default_factory=list, serialization_alias="prices", description="价格列表")
+
+    @field_serializer('product_id')
+    def serialize_product_id(self, value: int) -> str:
+        """将商品ID序列化为字符串"""
+        return str(value)
 
 
 class PriceItemResponse(BaseModel):
     """价格项响应 Schema"""
-    id: int = Field(..., alias="id", description="价格ID")
-    level_id: int = Field(..., alias="levelId", description="会员等级ID")
-    level_name: Optional[str] = Field(None, alias="levelName", description="会员等级名称")
-    sale_price: Decimal = Field(..., alias="salePrice", description="销售价格")
-    updated_at: datetime = Field(..., alias="updatedAt", description="更新时间")
+    id: int = Field(..., serialization_alias="id", description="价格ID")
+    level_id: int = Field(..., serialization_alias="levelId", description="会员等级ID")
+    level_name: Optional[str] = Field(None, serialization_alias="levelName", description="会员等级名称")
+    sale_price: Decimal = Field(..., serialization_alias="salePrice", description="销售价格")
+    updated_at: datetime = Field(..., serialization_alias="updatedAt", description="更新时间")
+
+    @field_serializer('id', 'level_id')
+    def serialize_ids(self, value: int) -> str:
+        """将ID序列化为字符串"""
+        return str(value)
 
     class Config:
         from_attributes = True
@@ -86,9 +101,14 @@ class PriceItemResponse(BaseModel):
 
 class BatchPriceResponse(BaseModel):
     """批量价格创建响应 Schema"""
-    product_id: int = Field(..., alias="productId", description="商品ID")
-    created_count: int = Field(..., alias="createdCount", description="创建数量")
-    updated_count: int = Field(..., alias="updatedCount", description="更新数量")
+    product_id: int = Field(..., serialization_alias="productId", description="商品ID")
+    created_count: int = Field(..., serialization_alias="createdCount", description="创建数量")
+    updated_count: int = Field(..., serialization_alias="updatedCount", description="更新数量")
+
+    @field_serializer('product_id')
+    def serialize_product_id(self, value: int) -> str:
+        """将商品ID序列化为字符串"""
+        return str(value)
 
     class Config:
         populate_by_name = True

@@ -1,7 +1,7 @@
 """
 客户相关的 Pydantic Schema
 """
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from typing import Optional
 from datetime import datetime
 
@@ -49,14 +49,19 @@ class CustomerById(BaseModel):
 
 class CustomerResponse(BaseModel):
     """客户响应 Schema"""
-    id: int = Field(..., alias="id", description="客户ID")
-    level_id: int = Field(..., alias="levelId", description="会员等级ID")
-    level_name: Optional[str] = Field(None, alias="levelName", description="会员等级名称")
-    name: str = Field(..., alias="name", description="客户名称")
-    phone: str = Field(..., alias="phone", description="联系电话")
-    contact_person: Optional[str] = Field(None, alias="contactPerson", description="联系人")
-    address: str = Field(..., alias="address", description="地址")
-    created_at: datetime = Field(..., alias="createdAt", description="创建时间")
+    id: int = Field(..., serialization_alias="id", description="客户ID")
+    level_id: int = Field(..., serialization_alias="levelId", description="会员等级ID")
+    level_name: Optional[str] = Field(None, serialization_alias="levelName", description="会员等级名称")
+    name: str = Field(..., serialization_alias="name", description="客户名称")
+    phone: str = Field(..., serialization_alias="phone", description="联系电话")
+    contact_person: Optional[str] = Field(None, serialization_alias="contactPerson", description="联系人")
+    address: str = Field(..., serialization_alias="address", description="地址")
+    created_at: datetime = Field(..., serialization_alias="createdAt", description="创建时间")
+
+    @field_serializer('id', 'level_id')
+    def serialize_ids(self, value: int) -> str:
+        """将ID序列化为字符串"""
+        return str(value)
 
     class Config:
         from_attributes = True
@@ -65,14 +70,19 @@ class CustomerResponse(BaseModel):
 
 class CustomerListResponse(BaseModel):
     """客户列表响应 Schema（带等级名称）"""
-    id: int = Field(..., alias="id", description="客户ID")
-    level_id: int = Field(..., alias="levelId", description="会员等级ID")
-    level_name: Optional[str] = Field(None, alias="levelName", description="会员等级名称")
-    name: str = Field(..., alias="name", description="客户名称")
-    phone: str = Field(..., alias="phone", description="联系电话")
-    contact_person: Optional[str] = Field(None, alias="contactPerson", description="联系人")
-    address: str = Field(..., alias="address", description="地址")
-    created_at: datetime = Field(..., alias="createdAt", description="创建时间")
+    id: int = Field(..., serialization_alias="id", description="客户ID")
+    level_id: int = Field(..., serialization_alias="levelId", description="会员等级ID")
+    level_name: Optional[str] = Field(None, serialization_alias="levelName", description="会员等级名称")
+    name: str = Field(..., serialization_alias="name", description="客户名称")
+    phone: str = Field(..., serialization_alias="phone", description="联系电话")
+    contact_person: Optional[str] = Field(None, serialization_alias="contactPerson", description="联系人")
+    address: str = Field(..., serialization_alias="address", description="地址")
+    created_at: datetime = Field(..., serialization_alias="createdAt", description="创建时间")
+
+    @field_serializer('id', 'level_id')
+    def serialize_ids(self, value: int) -> str:
+        """将ID序列化为字符串"""
+        return str(value)
 
     class Config:
         from_attributes = True
